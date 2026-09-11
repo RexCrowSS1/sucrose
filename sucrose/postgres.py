@@ -23,8 +23,14 @@ class PostgresStore(Store):
         self._write_lock = asyncio.Lock()
 
     async def connect(self):
-        return await psycopg.AsyncConnection.connect(self.url, connect_timeout=10,
-                                                     options="-c statement_timeout=10000 -c lock_timeout=5000")
+        connection = await psycopg.AsyncConnection.connect(self.url, connect_timeout=10)
+        try:
+            await connection.execute("SET statement_timeout = 10000")
+            await connection.execute("SET lock_timeout = 5000")
+        except Exception:
+            await connection.close()
+            raise
+        return connection
 
     async def initialize(self):
         try:

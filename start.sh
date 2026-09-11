@@ -169,3 +169,35 @@ except (RuntimeError, ValueError, OSError, subprocess.SubprocessError) as error:
     print(f"Tidak berhasil: {error}", file=sys.stderr)
     sys.exit(1)
 PY
+
+# ==========================================================
+
+# nohup ./start.sh > .run/bot.log 2>&1 < /dev/null & 
+# USE THIS COMMAND TO START THE BOT IN BACKGROUND AND
+# LOG OUTPUT TO .run/bot.log
+
+# ==========================================================
+
+# tail -f .run/bot.log
+# this command will keep the bot running even after you close the terminal, 
+# and you can monitor the log output in real-time.
+
+# ===========================================================
+
+# pkill -f 'python.*-u -'
+# menghentikan bot yang berjalan di background dengan perintah di atas. 
+# Pastikan untuk mengecek log terlebih dahulu sebelum menghentikan bot, 
+# agar tidak kehilangan informasi penting.
+
+# ==========================================================
+
+# ps -axo pid=,command= | grep '[P]ython'
+# kill PID
+
+# ==========================================================
+
+# Pastikan jangan menjalankan dua instance sekaligus. 
+# Untuk Render, gunakan Start Command:
+# python -u bot.py --web
+
+# ==========================================================
