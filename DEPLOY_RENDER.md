@@ -14,7 +14,7 @@ Simpan connection string sebagai `DATABASE_URL` di Environment Render. Jangan ma
 DATABASE_URL=postgresql://USER:PASSWORD@HOST/DATABASE?sslmode=require
 ```
 
-Bot otomatis membuat tabel `sucrose_guild_config` dan membaca konfigurasi saat startup. Akun database perlu izin membuat tabel serta membaca/menulis tabel tersebut. Semua branding, autoresponder, role, pengaturan AI per server, dan konfigurasi tiket disimpan di PostgreSQL. Riwayat AI tetap di memori; channel/percakapan tiket tetap di Discord.
+Bot otomatis membuat atau memakai tabel `varah_guild_config` dan membaca konfigurasi saat startup. Nama tabel lama dipertahankan agar konfigurasi existing tidak hilang setelah rename bot menjadi Sucrose. Akun database perlu izin membuat tabel serta membaca/menulis tabel tersebut. Semua branding, autoresponder, role, pengaturan AI per server, dan konfigurasi tiket disimpan di PostgreSQL. Riwayat AI tetap di memori; channel/percakapan tiket tetap di Discord.
 
 Mode `--web` menolak berjalan tanpa `DATABASE_URL`. Jika database gagal, bot tidak beralih diam-diam ke file sementara. Penulisan yang gagal tidak dilaporkan sebagai berhasil. Tidak ada koneksi polling database terus-menerus; koneksi digunakan saat startup dan perubahan konfigurasi.
 
