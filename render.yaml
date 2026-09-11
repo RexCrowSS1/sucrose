@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: varah-discord-bot
+    runtime: python
+    plan: free
+    numInstances: 1
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -u bot.py --web
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.14.3
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: CLIENT_ID
+        sync: false
+      - key: OWNER_IDS
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: AI_ENABLED
+        value: "false"
+      - key: OLLAMA_MODEL
+        value: llama3.2:latest
