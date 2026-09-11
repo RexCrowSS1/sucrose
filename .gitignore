@@ -8,6 +8,7 @@ __pycache__/
 .env
 .env.*
 !.env.example
+.neon
 data/
 *.log
 .DS_Store
