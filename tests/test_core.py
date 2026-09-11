@@ -8,10 +8,10 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import discord
 from discord import app_commands
 
-from varah.client import VarahBot
-from varah.config import Settings
-from varah.store import Store
-from varah.utils import UserError, branded, chunks, color, image_url, matches, mention_prompt, parse_ticket, template, ticket_overwrites, ticket_topic, validate_role
+from sucrose.client import SucroseBot
+from sucrose.config import Settings
+from sucrose.store import Store
+from sucrose.utils import UserError, branded, chunks, color, image_url, matches, mention_prompt, parse_ticket, template, ticket_overwrites, ticket_topic, validate_role
 
 
 class StoreTests(unittest.TestCase):
@@ -22,10 +22,10 @@ class StoreTests(unittest.TestCase):
 
     def test_persistence_and_isolation(self):
         store = Store(self.path)
-        store.update(1, lambda c: c["brand"].update(name="Varah"))
+        store.update(1, lambda c: c["brand"].update(name="Sucrose"))
         copy = store.get(1)
         copy["brand"]["name"] = "Changed"
-        self.assertEqual(Store(self.path).get(1)["brand"]["name"], "Varah")
+        self.assertEqual(Store(self.path).get(1)["brand"]["name"], "Sucrose")
         self.assertEqual(store.get(2)["brand"], {})
 
     def test_previous_javascript_data_remains_compatible(self):
@@ -49,7 +49,7 @@ class StoreTests(unittest.TestCase):
     def test_failed_write_does_not_change_memory_or_existing_file(self):
         store = Store(self.path)
         store.update(1, lambda c: c["brand"].update(name="Before"))
-        with patch("varah.store.os.replace", side_effect=OSError("disk failure")):
+        with patch("sucrose.store.os.replace", side_effect=OSError("disk failure")):
             with self.assertRaises(OSError):
                 store.update(1, lambda c: c["brand"].update(name="After"))
         self.assertEqual(store.get(1)["brand"]["name"], "Before")
@@ -131,7 +131,7 @@ class CommandTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
-        self.bot = VarahBot(Settings(data_file=Path(self.directory.name) / "config.json"))
+        self.bot = SucroseBot(Settings(data_file=Path(self.directory.name) / "config.json"))
         self.addAsyncCleanup(self.bot.close)
 
     async def test_commands_serialize_and_restrict_installs(self):

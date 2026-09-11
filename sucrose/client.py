@@ -13,11 +13,11 @@ from .store import Store
 from .tickets import CloseTicketView, OpenTicketView, TicketService
 from .utils import UserError, branded, chat_key, chunks, matches, mention_prompt, template
 
-log = logging.getLogger("varah")
+log = logging.getLogger("sucrose")
 PUBLIC_COMMANDS = {"help", "ping", "chat", "chat-reset"}
 
 
-class VarahTree(app_commands.CommandTree):
+class SucroseTree(app_commands.CommandTree):
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if not interaction.guild:
             raise UserError("Gunakan bot di dalam server.")
@@ -33,7 +33,7 @@ class VarahTree(app_commands.CommandTree):
         await report_error(interaction, error)
 
 
-class VarahBot(discord.Client):
+class SucroseBot(discord.Client):
     def __init__(self, settings: Settings):
         intents = discord.Intents.default()
         intents.members = True
@@ -45,7 +45,7 @@ class VarahBot(discord.Client):
             self.store = PostgresStore(settings.database_url)
         else:
             self.store = Store(settings.data_file)
-        self.tree = VarahTree(self, allowed_contexts=app_commands.AppCommandContext(guild=True, dm_channel=False, private_channel=False),
+        self.tree = SucroseTree(self, allowed_contexts=app_commands.AppCommandContext(guild=True, dm_channel=False, private_channel=False),
                               allowed_installs=app_commands.AppInstallationType(guild=True, user=False))
         self.tickets = TicketService(self.store)
         self.session: aiohttp.ClientSession | None = None
@@ -83,7 +83,7 @@ class VarahBot(discord.Client):
         await super().close()
 
     async def on_ready(self):
-        log.info("Varah aktif sebagai %s di %s server. Model: %s", self.user, len(self.guilds), self.settings.ollama_model)
+        log.info("sucrose aktif sebagai %s di %s server. Model: %s", self.user, len(self.guilds), self.settings.ollama_model)
 
     async def on_member_join(self, member: discord.Member):
         config = self.store.get(member.guild.id)["roles"]
@@ -93,7 +93,7 @@ class VarahBot(discord.Client):
             if not role or role.managed or role.is_default() or role >= member.guild.me.top_role:
                 continue
             try:
-                await member.add_roles(role, reason="Varah: role otomatis anggota baru")
+                await member.add_roles(role, reason="sucrose: role otomatis anggota baru")
             except discord.HTTPException as exc:
                 log.warning("Autorole gagal, role=%s kode=%s", role_id, exc.code)
 
@@ -102,11 +102,15 @@ class VarahBot(discord.Client):
             return
         config = self.store.get(message.guild.id)
         prompt = mention_prompt(message.content, self.user.id)
-        if prompt is not None:
+        reference = getattr(message, "reference", None)
+        referenced = getattr(reference, "resolved", None) if reference else None
+        replied_to_bot = referenced is not None and getattr(getattr(referenced, "author", None), "id", None) == self.user.id
+        if prompt is not None or replied_to_bot:
+            prompt = message.content.strip() if prompt is None else prompt
             try:
                 check_access(config, message.channel.id, getattr(message.channel, "parent_id", None))
                 if not prompt:
-                    raise UserError("Tulis pesan setelah mention, misalnya @Varah halo! Anda juga bisa memakai /chat.")
+                    raise UserError("Tulis pesan setelah mention atau reply dengan pertanyaan untuk sucrose.")
                 async with message.channel.typing():
                     answer = await self.chat.ask(chat_key(message.guild.id, message.channel.id, message.author.id), prompt, config["ai"].get("system_prompt"))
                 for index, part in enumerate(chunks(answer)):

@@ -48,7 +48,7 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import urlopen
 
-from varah.config import ROOT, Settings
+from sucrose.config import ROOT, Settings
 
 
 def find_running_bot():

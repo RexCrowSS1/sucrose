@@ -5,7 +5,7 @@ from discord import app_commands
 
 from .utils import UserError
 
-log = logging.getLogger("varah")
+log = logging.getLogger("sucrose")
 
 
 async def report_error(interaction: discord.Interaction, error: Exception) -> None:

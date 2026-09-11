@@ -7,10 +7,10 @@ from pathlib import Path
 import aiohttp
 import discord
 
-from varah.ai import OllamaClient
-from varah.client import VarahBot
-from varah.config import Settings
-from varah.utils import UserError
+from sucrose.ai import OllamaClient
+from sucrose.client import SucroseBot
+from sucrose.config import Settings
+from sucrose.utils import UserError
 
 
 async def run(args):
@@ -21,8 +21,8 @@ async def run(args):
         path = Path(args.import_config)
         if not path.is_file():
             raise ValueError("File konfigurasi sumber tidak ditemukan.")
-        from varah.postgres import PostgresStore
-        from varah.store import Store
+        from sucrose.postgres import PostgresStore
+        from sucrose.store import Store
         storage = PostgresStore(settings.database_url)
         await storage.initialize()
         count = await storage.import_missing(Store(path))
@@ -37,15 +37,15 @@ async def run(args):
             if model not in models and not (":" not in model and f"{model}:latest" in models):
                 raise UserError(f"Model {model} belum tersedia. Jalankan ollama pull {model}.")
             if args.smoke_chat:
-                answer = await ollama.chat([{"role": "system", "content": settings.system_prompt}, {"role": "user", "content": "Halo Varah, jawab salam ini dalam satu kalimat bahasa Indonesia."}])
+                answer = await ollama.chat([{"role": "system", "content": settings.system_prompt}, {"role": "user", "content": "Halo Sucrose, jawab salam ini dalam satu kalimat bahasa Indonesia."}])
                 print("Jawaban model: " + answer)
         return
     settings.require_token()
     if args.web:
-        from varah.hosting import run_web
+        from sucrose.hosting import run_web
         await run_web(settings)
         return
-    async with VarahBot(settings) as bot:
+    async with SucroseBot(settings) as bot:
         if args.sync:
             await bot.login(settings.token)
             await bot.sync_commands()
@@ -54,7 +54,7 @@ async def run(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Varah • Discord + Ollama")
+    parser = argparse.ArgumentParser(description="Sucrose • Discord + Ollama")
     group = parser.add_mutually_exclusive_group()
     group.add_argument("--sync", action="store_true", help="Daftarkan slash command tanpa menjalankan gateway")
     group.add_argument("--check-ollama", action="store_true", help="Periksa layanan dan model Ollama tanpa token Discord")

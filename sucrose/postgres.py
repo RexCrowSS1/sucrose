@@ -9,7 +9,7 @@ from psycopg.types.json import Jsonb
 from .store import Store, defaults
 from .utils import UserError
 
-log = logging.getLogger("varah.storage")
+log = logging.getLogger("sucrose.storage")
 
 
 class StorageError(UserError):

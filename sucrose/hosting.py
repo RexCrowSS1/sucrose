@@ -6,9 +6,9 @@ import signal
 
 from aiohttp import web
 
-from .client import VarahBot
+from .client import SucroseBot, SucroseBot
 
-log = logging.getLogger("varah.hosting")
+log = logging.getLogger("sucrose.hosting")
 
 
 def create_app(bot):
@@ -17,7 +17,7 @@ def create_app(bot):
         return web.Response(text=(
             "<!doctype html><html lang='id'><meta charset='utf-8'>"
             "<meta name='viewport' content='width=device-width,initial-scale=1'>"
-            "<title>Varah Bot</title><body><h1>Varah Bot</h1>"
+            "<title>sucrose Bot</title><body><h1>sucrose Bot</h1>"
             f"<p>Discord: {state}.</p>"
             "<p>Gunakan command bot di Discord. Halaman ini tidak menyediakan chat publik.</p>"
             "<p>Render Free dapat tidur saat tidak ada trafik masuk.</p></body></html>"
@@ -57,7 +57,7 @@ async def run_web(settings):
         except (NotImplementedError, RuntimeError):
             pass
     try:
-        async with VarahBot(settings) as bot:
+        async with SucroseBot(settings) as bot:
             runner = web.AppRunner(create_app(bot), access_log=None)
             await runner.setup()
             bot_task = stop_task = None

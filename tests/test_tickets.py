@@ -5,8 +5,8 @@ from unittest.mock import AsyncMock, MagicMock
 
 import discord
 
-from varah.tickets import TicketService, OpenTicketView, CloseTicketView
-from varah.utils import UserError, parse_ticket, ticket_topic
+from sucrose.tickets import TicketService, OpenTicketView, CloseTicketView
+from sucrose.utils import UserError, parse_ticket, ticket_topic
 
 
 def fixture():
@@ -38,7 +38,7 @@ class TicketTests(unittest.IsolatedAsyncioTestCase):
         await f.service.open(f.i)
         options = f.i.guild.create_text_channel.call_args.kwargs
         self.assertIs(options["category"], f.category)
-        self.assertEqual(options["topic"], "varah-ticket:3:4:open")
+        self.assertEqual(options["topic"], "sucrose-ticket:3:4:open")
         self.assertFalse(options["overwrites"][f.i.guild.default_role].view_channel)
         self.assertEqual(len(options["overwrites"]), 4)
         view = f.room.send.call_args.kwargs["view"]

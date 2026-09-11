@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: varah-discord-bot
+    name: sucrose-discord-bot
     runtime: python
     plan: free
     numInstances: 1

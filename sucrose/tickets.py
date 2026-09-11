@@ -5,7 +5,7 @@ import discord
 from .errors import report_error
 from .utils import UserError, branded, parse_ticket, ticket_overwrites, ticket_topic
 
-log = logging.getLogger("varah.tickets")
+log = logging.getLogger("sucrose.tickets")
 
 
 class TicketService:
@@ -75,7 +75,7 @@ class TicketService:
             room = await i.guild.fetch_channel(i.channel_id)
             ticket = parse_ticket(room.topic)
             if not ticket:
-                raise UserError("Channel ini bukan tiket Varah.")
+                raise UserError("Channel ini bukan tiket Sucrose.")
             member = await i.guild.fetch_member(i.user.id)
             if not (i.user.id == ticket["owner"] or any(r.id == ticket["staff"] for r in member.roles) or member.guild_permissions.manage_guild):
                 raise UserError("Hanya pembuka tiket atau staf yang dapat menutupnya.")

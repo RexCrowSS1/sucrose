@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_PROMPT = (
-    "Kamu Varah, teman ngobrol di Discord. Jawab dengan ramah, jelas, dan ringkas "
+    "Kamu sucrose, teman ngobrol di Discord. Jawab dengan ramah, jelas, dan ringkas "
     "dalam bahasa Indonesia kecuali diminta bahasa lain."
 )
 

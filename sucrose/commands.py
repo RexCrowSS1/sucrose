@@ -36,9 +36,9 @@ def register_commands(bot) -> None:
         tree.add_command(result)
         return result
 
-    @tree.command(name="help", description="Panduan bot Varah")
+    @tree.command(name="help", description="Panduan bot sucrose")
     async def help_command(i: discord.Interaction):
-        await respond(i, embed=branded(store.get(i.guild_id), title="Varah • Panduan Bot", description=(
+        await respond(i, embed=branded(store.get(i.guild_id), title="sucrose • Panduan Bot", description=(
             "**Chat AI**\n`/chat pesan:...` atau mention bot untuk ngobrol.\n"
             "`/chat privat:true` — jawaban hanya terlihat oleh Anda.\n"
             "`/chat-reset` — hapus ingatan chat Anda di channel ini.\n"
@@ -208,8 +208,8 @@ def register_commands(bot) -> None:
             raise UserError("Format gambar tidak didukung Discord. Upload PNG/JPG/GIF/WebP yang valid.") from exc
         await i.edit_original_response(content="Profil bot diperbarui untuk semua server. Discord membatasi frekuensi perubahan profil.")
 
-    @tree.command(name="chat", description="Ngobrol dengan Varah melalui Ollama lokal")
-    @app_commands.describe(pesan="Pesan untuk Varah", privat="Jawaban hanya terlihat oleh Anda (default: publik)")
+    @tree.command(name="chat", description="Ngobrol dengan sucrose melalui AI")
+    @app_commands.describe(pesan="Pesan untuk sucrose", privat="Jawaban hanya terlihat oleh Anda (default: publik)")
     async def chat(i: discord.Interaction, pesan: app_commands.Range[str, 1, 2000], privat: bool = False):
         config = store.get(i.guild_id)
         check_access(config, i.channel_id, getattr(i.channel, "parent_id", None))
@@ -225,11 +225,11 @@ def register_commands(bot) -> None:
         bot.chat.reset(i.guild_id, i.channel_id, i.user.id)
         await respond(i, "Ingatan chat Anda di channel ini dihapus. Pesan Discord yang sudah terkirim tetap ada.", ephemeral=True)
 
-    ai = group("ai", "Pengaturan chat Ollama di server ini")
+    ai = group("ai", "Pengaturan chat AI di server ini")
 
     @ai.command(name="setup", description="Aktifkan AI, batasi channel, atau atur kepribadian")
     @app_commands.describe(enabled="Aktif/nonaktifkan chat AI", channel="Batasi chat ke channel ini beserta thread-nya",
-                           all_channels="Hapus pembatasan channel", system_prompt="Instruksi kepribadian Varah di server ini",
+                           all_channels="Hapus pembatasan channel", system_prompt="Instruksi kepribadian sucrose di server ini",
                            reset_prompt="Kembalikan kepribadian default dari .env")
     async def ai_setup(i: discord.Interaction, enabled: bool | None = None, channel: discord.TextChannel | None = None,
                        all_channels: bool = False, system_prompt: app_commands.Range[str, 1, 1500] | None = None,
@@ -252,7 +252,7 @@ def register_commands(bot) -> None:
         await bot.save_config(i, update)
         await respond(i, "Pengaturan AI disimpan. Lihat /ai status.", ephemeral=True)
 
-    @ai.command(name="status", description="Periksa pengaturan AI dan koneksi Ollama")
+    @ai.command(name="status", description="Periksa pengaturan dan koneksi AI")
     async def ai_status(i: discord.Interaction):
         await i.response.defer(ephemeral=True)
         config = store.get(i.guild_id)["ai"]
@@ -269,6 +269,6 @@ def register_commands(bot) -> None:
         await i.edit_original_response(content=(
             f"AI: {'aktif' if config['enabled'] else 'nonaktif'}\n"
             f"Channel: {'<#' + config['channel'] + '>' if config['channel'] else 'semua channel'}\n"
-            f"Model: {bot.settings.ollama_model}\nOllama: {status}\n"
+            f"Status layanan: {status}\n"
             f"Ingatan: {bot.settings.history_turns} putaran, kedaluwarsa setelah {bot.settings.history_ttl // 60} menit tidak aktif."
         ))

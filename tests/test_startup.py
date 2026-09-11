@@ -6,7 +6,7 @@ from unittest.mock import patch
 import aiohttp
 
 import bot
-from varah.config import Settings
+from sucrose.config import Settings
 
 
 class StartupTests(unittest.TestCase):

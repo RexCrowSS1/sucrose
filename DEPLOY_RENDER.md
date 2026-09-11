@@ -1,4 +1,4 @@
-# Deploy Varah ke Render Free
+# Deploy Sucrose ke Render Free
 
 Proyek sudah menyediakan mode Web Service: `python -u bot.py --web`, endpoint HTTP, Blueprint `render.yaml`, dan penyimpanan PostgreSQL. Tidak perlu menjalankan `start.sh` atau mengunggah `.venv` ke Render.
 
@@ -14,13 +14,13 @@ Simpan connection string sebagai `DATABASE_URL` di Environment Render. Jangan ma
 DATABASE_URL=postgresql://USER:PASSWORD@HOST/DATABASE?sslmode=require
 ```
 
-Bot otomatis membuat tabel `varah_guild_config` dan membaca konfigurasi saat startup. Akun database perlu izin membuat tabel serta membaca/menulis tabel tersebut. Semua branding, autoresponder, role, pengaturan AI per server, dan konfigurasi tiket disimpan di PostgreSQL. Riwayat AI tetap di memori; channel/percakapan tiket tetap di Discord.
+Bot otomatis membuat tabel `sucrose_guild_config` dan membaca konfigurasi saat startup. Akun database perlu izin membuat tabel serta membaca/menulis tabel tersebut. Semua branding, autoresponder, role, pengaturan AI per server, dan konfigurasi tiket disimpan di PostgreSQL. Riwayat AI tetap di memori; channel/percakapan tiket tetap di Discord.
 
 Mode `--web` menolak berjalan tanpa `DATABASE_URL`. Jika database gagal, bot tidak beralih diam-diam ke file sementara. Penulisan yang gagal tidak dilaporkan sebagai berhasil. Tidak ada koneksi polling database terus-menerus; koneksi digunakan saat startup dan perubahan konfigurasi.
 
 ## 2. Upload kode ke repository GitHub
 
-Sertakan `bot.py`, `varah/`, `requirements.txt`, dan `render.yaml`. `.gitignore` sudah mengecualikan `.env`, `.venv`, `.run`, serta `data/`. Jangan mengunggah token bot atau konfigurasi rahasia. Pastikan versi terbaru proyek sudah di-push ke repository Anda.
+Sertakan `bot.py`, `sucrose/`, `requirements.txt`, dan `render.yaml`. `.gitignore` sudah mengecualikan `.env`, `.venv`, `.run`, serta `data/`. Jangan mengunggah token bot atau konfigurasi rahasia. Pastikan versi terbaru proyek sudah di-push ke repository Anda.
 
 ## 3. Deploy dengan Blueprint
 
@@ -70,7 +70,7 @@ Log yang diharapkan:
 
 ```text
 HTTP siap di port ...
-Varah aktif sebagai ...
+Sucrose aktif sebagai ...
 ```
 
 Periksa URL layanan:
@@ -110,7 +110,7 @@ Restart setelah mengubah Environment. Gunakan `/ai status` untuk mengecek koneks
 
 ```sh
 .venv/bin/python -m unittest discover -s tests -v
-.venv/bin/python -m compileall -q bot.py varah tests
+.venv/bin/python -m compileall -q bot.py sucrose tests
 .venv/bin/python -m pip check
 ```
 

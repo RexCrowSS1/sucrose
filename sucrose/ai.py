@@ -24,30 +24,30 @@ class OllamaClient:
                 headers={"Authorization": f"Bearer {self.settings.ollama_api_key}"} if self.settings.ollama_api_key else {},
             ) as response:
                 if response.status == 404:
-                    raise UserError("Model/endpoint Ollama tidak ditemukan. Periksa OLLAMA_MODEL dan jalankan ollama pull untuk model tersebut.")
+                    raise UserError("Layanan AI belum siap. Coba lagi nanti.")
                 if response.status != 200:
-                    raise UserError(f"Ollama menolak permintaan (HTTP {response.status}). Periksa layanan dan model lokal.")
+                    raise UserError("Layanan AI menolak permintaan. Coba lagi nanti.")
                 body = bytearray()
                 async for chunk in response.content.iter_chunked(65536):
                     body.extend(chunk)
                     if len(body) > 2 * 1024 * 1024:
-                        raise UserError("Respons Ollama terlalu besar. Coba pertanyaan lebih singkat.")
+                        raise UserError("Respons AI terlalu besar. Coba pertanyaan lebih singkat.")
                 data = json.loads(body)
                 if not isinstance(data, dict) or data.get("error"):
-                    raise UserError("Ollama mengembalikan kesalahan. Periksa log layanan lokal.")
+                    raise UserError("Layanan AI mengalami kesalahan. Coba lagi nanti.")
                 return data
         except (asyncio.TimeoutError, TimeoutError) as exc:
-            raise UserError("Ollama terlalu lama merespons. Coba lagi atau gunakan model lebih ringan.") from exc
+            raise UserError("Layanan AI terlalu lama merespons. Coba lagi nanti.") from exc
         except aiohttp.ClientError as exc:
-            raise UserError("Tidak dapat menghubungi Ollama. Jalankan ollama serve dan periksa OLLAMA_BASE_URL.") from exc
+            raise UserError("Tidak dapat menghubungi layanan AI. Coba lagi nanti.") from exc
         except (ValueError, UnicodeError) as exc:
-            raise UserError("Respons Ollama bukan JSON yang valid.") from exc
+            raise UserError("Layanan AI mengirim respons yang tidak valid.") from exc
 
     async def models(self) -> list[str]:
         data = await self.request("GET", "/api/tags")
         models = data.get("models")
         if not isinstance(models, list):
-            raise UserError("Daftar model Ollama tidak valid.")
+            raise UserError("Layanan AI mengirim daftar model yang tidak valid.")
         return [m["name"] for m in models if isinstance(m, dict) and isinstance(m.get("name"), str)]
 
     async def chat(self, messages: list[dict]) -> str:
@@ -60,7 +60,7 @@ class OllamaClient:
         message = data.get("message")
         content = message.get("content") if isinstance(message, dict) else None
         if not isinstance(content, str) or not content.strip():
-            raise UserError("Ollama mengirim respons kosong. Coba pertanyaan lain atau model chat lain.")
+            raise UserError("AI mengirim respons kosong. Coba pertanyaan lain.")
         if len(content) > 6000:
             content = content[:5900] + "\n\n[Jawaban dipotong. Minta bagian berikutnya bila diperlukan.]"
         return content.strip()
@@ -90,7 +90,7 @@ class ChatService:
 
     async def ask(self, key: tuple, prompt: str, system: str | None = None) -> str:
         if not self.settings.ai_enabled:
-            raise UserError("Chat AI belum diaktifkan pada hosting ini. Pemilik bot perlu menyiapkan Ollama dan mengatur AI_ENABLED=true.")
+            raise UserError("Chat AI belum diaktifkan pada hosting ini (AI_ENABLED=false).")
         prompt = prompt.strip()
         if not 1 <= len(prompt) <= 2000:
             raise UserError("Pesan chat harus berisi 1–2.000 karakter.")

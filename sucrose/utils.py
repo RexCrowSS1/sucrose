@@ -63,12 +63,12 @@ def validate_role(role, guild, bot, actor) -> None:
 
 
 def parse_ticket(topic: str | None) -> dict | None:
-    match = re.fullmatch(r"varah-ticket:(\d+):(\d+):(open|closed)", topic or "")
+    match = re.fullmatch(r"(?:sucrose|varah)-ticket:(\d+):(\d+):(open|closed)", topic or "")
     return {"owner": int(match[1]), "staff": int(match[2]), "status": match[3]} if match else None
 
 
 def ticket_topic(owner: int, staff: int, status="open") -> str:
-    return f"varah-ticket:{owner}:{staff}:{status}"
+    return f"sucrose-ticket:{owner}:{staff}:{status}"
 
 
 def ticket_overwrites(everyone, bot, owner, staff) -> dict:

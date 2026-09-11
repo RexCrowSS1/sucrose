@@ -7,9 +7,9 @@ from unittest.mock import AsyncMock, MagicMock
 
 import aiohttp
 
-from varah.ai import ChatService, OllamaClient, check_access
-from varah.config import Settings
-from varah.utils import UserError, chat_key
+from sucrose.ai import ChatService, OllamaClient, check_access
+from sucrose.config import Settings
+from sucrose.utils import UserError, chat_key
 
 
 class ChatTests(unittest.IsolatedAsyncioTestCase):

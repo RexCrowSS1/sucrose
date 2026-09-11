@@ -6,15 +6,15 @@ from unittest.mock import AsyncMock, MagicMock
 
 import discord
 
-from varah.client import VarahBot
-from varah.config import Settings
+from sucrose.client import SucroseBot
+from sucrose.config import Settings
 
 
 class EventTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
-        self.bot = VarahBot(Settings(data_file=Path(self.directory.name) / "config.json"))
+        self.bot = SucroseBot(Settings(data_file=Path(self.directory.name) / "config.json"))
         self.bot._connection.user = Obj(id=123)
         self.bot.chat = Obj(ask=AsyncMock(return_value="Halo dari Ollama"))
         self.addAsyncCleanup(self.bot.close)
@@ -46,6 +46,13 @@ class EventTests(unittest.IsolatedAsyncioTestCase):
         message.reply.assert_awaited_once()
         self.assertEqual(message.reply.call_args.args[0], "Halo dari Ollama")
         self.assertFalse(message.reply.call_args.kwargs["allowed_mentions"].everyone)
+
+    async def test_reply_to_bot_also_starts_chat(self):
+        message = self.message("lanjutkan penjelasannya")
+        message.reference = Obj(resolved=Obj(author=Obj(id=123)))
+        await self.bot.on_message(message)
+        self.bot.chat.ask.assert_awaited_once_with((1, 2, 3, "public"), "lanjutkan penjelasannya", None)
+        message.reply.assert_awaited_once()
 
     async def test_bot_and_webhook_messages_ignored(self):
         message = self.message("<@123> halo")

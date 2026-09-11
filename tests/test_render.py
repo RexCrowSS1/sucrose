@@ -10,12 +10,12 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from aiohttp.test_utils import make_mocked_request
 import psycopg
 
-from varah.ai import ChatService, OllamaClient
-from varah.client import VarahBot
-from varah.config import Settings
-from varah.hosting import create_app, run_web
-from varah.postgres import PostgresStore, StorageError
-from varah.utils import UserError
+from sucrose.ai import ChatService, OllamaClient
+from sucrose.client import SucroseBot
+from sucrose.config import Settings
+from sucrose.hosting import create_app, run_web
+from sucrose.postgres import PostgresStore, StorageError
+from sucrose.utils import UserError
 
 
 def connection():
@@ -93,7 +93,7 @@ class DatabaseTests(unittest.IsolatedAsyncioTestCase):
         store.initialize.assert_awaited_once()
 
     async def test_admin_write_defers_before_network_and_responds_after_save(self):
-        bot = VarahBot(Settings(database_url="postgresql://secret"))
+        bot = SucroseBot(Settings(database_url="postgresql://secret"))
         self.addAsyncCleanup(bot.close)
         bot.store.update_async = AsyncMock()
         response = Obj(is_done=MagicMock(return_value=False), defer=AsyncMock(), send_message=AsyncMock())
@@ -144,7 +144,7 @@ class HTTPTests(unittest.IsolatedAsyncioTestCase):
         runner = Obj(setup=AsyncMock(), cleanup=AsyncMock())
         site = Obj(start=AsyncMock())
         loop = asyncio.get_running_loop()
-        with patch("varah.hosting.VarahBot", return_value=bot), patch("varah.hosting.web.AppRunner", return_value=runner), patch("varah.hosting.web.TCPSite", return_value=site), patch.object(loop, "add_signal_handler"), patch.object(loop, "remove_signal_handler"):
+        with patch("sucrose.hosting.SucroseBot", return_value=bot), patch("sucrose.hosting.web.AppRunner", return_value=runner), patch("sucrose.hosting.web.TCPSite", return_value=site), patch.object(loop, "add_signal_handler"), patch.object(loop, "remove_signal_handler"):
             with self.assertRaisesRegex(UserError, "login failed"):
                 await run_web(Settings(database_url="postgresql://secret"))
         runner.cleanup.assert_awaited_once()

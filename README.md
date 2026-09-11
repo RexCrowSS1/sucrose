@@ -1,4 +1,4 @@
-# Varah • Discord Bot + Ollama
+# Sucrose • Discord Bot + Ollama
 
 **Deploy ke Render Free:** ikuti [DEPLOY_RENDER.md](DEPLOY_RENDER.md). Proyek menyediakan `render.yaml`, mode `python bot.py --web`, endpoint HTTP, dan PostgreSQL eksternal untuk konfigurasi persisten. Paket gratis tetap bisa tidur; AI hosting dinonaktifkan sampai Ollama tersedia.
 
@@ -62,7 +62,7 @@ python bot.py --sync
 python bot.py
 ```
 
-`--check-ollama` dan `--smoke-chat` tidak memerlukan token Discord. `--smoke-chat` mengirim satu salam ke model lokal. Bot online ketika terminal menampilkan `Varah aktif sebagai ...`. Kedua proses, bot Python dan Ollama, harus tetap berjalan. Tidak ada proses Node.js yang diperlukan.
+`--check-ollama` dan `--smoke-chat` tidak memerlukan token Discord. `--smoke-chat` mengirim satu salam ke model lokal. Bot online ketika terminal menampilkan `Sucrose aktif sebagai ...`. Kedua proses, bot Python dan Ollama, harus tetap berjalan. Tidak ada proses Node.js yang diperlukan.
 
 ## Pengaturan Discord
 
@@ -73,13 +73,13 @@ python bot.py
 5. Letakkan role bot **di atas role yang ingin diberikan otomatis**. Di kategori tiket, pastikan bot mempunyai View Channel, Manage Channels, dan Manage Roles. Bot tidak memerlukan Administrator.
 6. Jalankan `python bot.py --sync` setelah menambahkan bot. Sync mengganti daftar command aplikasi pada cakupan yang dipilih; jalankan lagi setelah definisi command berubah. Jika berpindah dari command server ke global, hapus command server lama melalui API Discord agar tidak tampil ganda.
 
-## Chat dengan Varah
+## Chat dengan Sucrose
 
 ```text
-/chat pesan:Halo Varah, bantu aku membuat ide acara server
+/chat pesan:Halo Sucrose, bantu aku membuat ide acara server
 /chat pesan:Jelaskan lebih singkat
 /chat pesan:Aku ingin ngobrol secara privat privat:true
-@Varah halo, apa kabar?
+@Sucrose halo, apa kabar?
 /chat-reset
 ```
 
@@ -96,7 +96,7 @@ Admin dengan **Manage Server** dapat mengatur:
 ```text
 /ai setup enabled:true channel:#ngobrol
 /ai setup all_channels:true
-/ai setup system_prompt:Kamu Varah, teman ngobrol yang ramah dan menjawab singkat dalam bahasa Indonesia.
+/ai setup system_prompt:Kamu Sucrose, teman ngobrol yang ramah dan menjawab singkat dalam bahasa Indonesia.
 /ai setup reset_prompt:true
 /ai setup enabled:false
 /ai status
@@ -111,7 +111,7 @@ Pembatasan channel berlaku untuk `/chat` dan mention, termasuk thread di dalam c
 | `OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Alamat layanan Ollama |
 | `OLLAMA_MODEL` | `llama3.2:latest` | Model chat yang sudah diunduh |
 | `OLLAMA_TIMEOUT` | `120` | Batas waktu respons dalam detik |
-| `OLLAMA_SYSTEM_PROMPT` | Kepribadian Varah berbahasa Indonesia | Instruksi dasar model |
+| `OLLAMA_SYSTEM_PROMPT` | Kepribadian Sucrose berbahasa Indonesia | Instruksi dasar model |
 | `AI_COOLDOWN_SECONDS` | `5` | Jeda per pengguna/server |
 | `AI_HISTORY_TURNS` | `6` | Jumlah putaran yang disimpan |
 | `AI_HISTORY_TTL_SECONDS` | `1800` | Kedaluwarsa konteks tidak aktif |
@@ -145,7 +145,7 @@ Pengaturan berikut memerlukan **Manage Server**. Anggota biasa dapat memakai `/h
 Contoh (pilih opsi dengan antarmuka slash command Discord):
 
 ```text
-/brand set name:Varah color:#F5A9D0 banner:https://example.com/banner.png avatar:https://example.com/avatar.png footer:Varah Community
+/brand set name:Sucrose color:#F5A9D0 banner:https://example.com/banner.png avatar:https://example.com/avatar.png footer:Sucrose Community
 /autoresponder add trigger:halo response:Halo {user}, selamat datang di {server}! mode:exact embed:true cooldown:5
 /autorole add target:human role:@Member
 /autorole add target:bot role:@Bots
@@ -165,7 +165,7 @@ Autorole berlaku untuk anggota **baru bergabung**, bukan seluruh anggota lama. R
 1. Buat kategori tiket dan role staf khusus. Jangan pilih role anggota umum sebagai staf.
 2. Jalankan `/ticket setup`, kemudian `/ticket panel` di channel yang dapat dilihat anggota.
 3. **Buka Tiket** membuat channel dengan overwrite eksplisit untuk pembuka, staf, dan bot. `@everyone` ditolak; overwrite kategori tidak disalin. **Pemilik server dan pemegang Administrator tetap dapat melihatnya**, mengikuti model izin Discord.
-4. Satu anggota hanya dapat mempunyai satu tiket aktif per server. Identitas tiket disimpan di topic `varah-ticket:…`; jangan ubah topic secara manual.
+4. Satu anggota hanya dapat mempunyai satu tiket aktif per server. Identitas tiket disimpan di topic `sucrose-ticket:…`; jangan ubah topic secara manual.
 5. Pembuka, staf, atau pemegang Manage Server yang dapat mengakses tiket dapat menutupnya. Bot menyembunyikan channel dari pembuka, menandai `closed-…`, dan menyimpan riwayat untuk staf. Pemegang Administrator tetap mengikuti izin Discord.
 6. Anggota bisa membuka tiket baru setelah tiket lama ditutup. Staf menghapus channel lama secara manual setelah riwayat tidak diperlukan; belum ada ekspor transkrip otomatis.
 
@@ -184,7 +184,7 @@ Perubahan setup hanya berlaku untuk tiket baru. Tombol tiket persisten dan tetap
 Konfigurasi disimpan atomik di `data/config.json`. Backup direktori `data/` dan gunakan volume persisten di hosting. Jalankan **satu instance bot per token/file data** agar respons dan tiket tidak terduplikasi. Riwayat chat AI hanya di memori; isi percakapan tiket tetap berada di Discord.
 
 ```sh
-python -m compileall -q bot.py varah tests
+python -m compileall -q bot.py sucrose tests
 python -m unittest discover -s tests -v
 python -m pip check
 python bot.py --smoke-chat
