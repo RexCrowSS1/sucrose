@@ -2,7 +2,7 @@ from pathlib import Path
 import tempfile
 from types import SimpleNamespace as Obj
 import unittest
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import ANY, AsyncMock, MagicMock
 
 import discord
 
@@ -42,7 +42,7 @@ class EventTests(unittest.IsolatedAsyncioTestCase):
         self.add_rule()
         message = self.message("<@123> halo")
         await self.bot.on_message(message)
-        self.bot.chat.ask.assert_awaited_once_with((1, 2, 3, "public"), "halo", None)
+        self.bot.chat.ask.assert_awaited_once_with((1, 2, 3, "public"), "halo", None, action=ANY)
         message.reply.assert_awaited_once()
         self.assertEqual(message.reply.call_args.args[0], "Halo dari Ollama")
         self.assertFalse(message.reply.call_args.kwargs["allowed_mentions"].everyone)
@@ -51,7 +51,7 @@ class EventTests(unittest.IsolatedAsyncioTestCase):
         message = self.message("lanjutkan penjelasannya")
         message.reference = Obj(resolved=Obj(author=Obj(id=123)))
         await self.bot.on_message(message)
-        self.bot.chat.ask.assert_awaited_once_with((1, 2, 3, "public"), "lanjutkan penjelasannya", None)
+        self.bot.chat.ask.assert_awaited_once_with((1, 2, 3, "public"), "lanjutkan penjelasannya", None, action=ANY)
         message.reply.assert_awaited_once()
 
     async def test_bot_and_webhook_messages_ignored(self):

@@ -7,6 +7,7 @@ from discord import app_commands
 
 from .ai import ChatService, OllamaClient, check_access
 from .commands import register_commands
+from .actions import CommandActions
 from .config import Settings
 from .errors import report_error
 from .store import Store
@@ -112,7 +113,7 @@ class SucroseBot(discord.Client):
                 if not prompt:
                     raise UserError("Tulis pesan setelah mention atau reply dengan pertanyaan untuk sucrose.")
                 async with message.channel.typing():
-                    answer = await self.chat.ask(chat_key(message.guild.id, message.channel.id, message.author.id), prompt, config["ai"].get("system_prompt"))
+                    answer = await self.chat.ask(chat_key(message.guild.id, message.channel.id, message.author.id), prompt, config["ai"].get("system_prompt"), action=CommandActions(self, message))
                 for index, part in enumerate(chunks(answer)):
                     if index == 0:
                         await message.reply(part, mention_author=False, allowed_mentions=discord.AllowedMentions.none())

@@ -164,7 +164,7 @@ class CommandTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_chat_splits_reply_and_keeps_private_history_private(self):
         self.bot.chat = Obj(ask=AsyncMock(return_value="x" * 4000))
-        i = Obj(guild_id=1, channel_id=2, user=Obj(id=3), channel=Obj(parent_id=None),
+        i = Obj(guild=Obj(id=1), guild_id=1, channel_id=2, user=Obj(id=3), channel=Obj(id=2, parent_id=None),
                 response=Obj(defer=AsyncMock()), edit_original_response=AsyncMock(), followup=Obj(send=AsyncMock()))
         await self.bot.tree.get_command("chat").callback(i, "Halo", True)
         self.assertEqual(self.bot.chat.ask.call_args.args[0], (1, 2, 3, "private"))

@@ -9,7 +9,7 @@ case "${1:-}" in
     echo "Pemakaian: ./start.sh"
     echo "Menjalankan bot dengan .env dan menyalakan Ollama lokal bila diperlukan."
     echo "Control + C menghentikan bot dan Ollama yang dimulai oleh script ini."
-    exit 0
+    exit 0f
     ;;
   "") ;;
   *) echo "Argumen tidak dikenal. Gunakan ./start.sh --help." >&2; exit 1 ;;

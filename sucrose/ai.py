@@ -88,7 +88,7 @@ class ChatService:
                 del self.histories[key]
         self.cooldowns = {k: expiry for k, expiry in self.cooldowns.items() if expiry > now}
 
-    async def ask(self, key: tuple, prompt: str, system: str | None = None) -> str:
+    async def ask(self, key: tuple, prompt: str, system: str | None = None, action=None) -> str:
         if not self.settings.ai_enabled:
             raise UserError("Chat AI belum diaktifkan pada hosting ini (AI_ENABLED=false).")
         prompt = prompt.strip()
@@ -108,6 +108,10 @@ class ChatService:
         self.active_users.add(user_key)
         self.cooldowns[user_key] = self.clock() + self.settings.cooldown
         try:
+            if action is not None:
+                result = await action(prompt)
+                if result is not None:
+                    return result
             system = system or self.settings.system_prompt
             old = self.histories.get(key)
             history = list(old.messages) if old and old.system == system else []

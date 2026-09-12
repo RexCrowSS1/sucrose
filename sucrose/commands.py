@@ -5,6 +5,7 @@ import discord
 from discord import app_commands
 
 from .ai import check_access
+from .actions import CommandActions
 from .tickets import OpenTicketView
 from .utils import UserError, branded, chat_key, chunks, color as parse_color, image_url, validate_role
 
@@ -41,6 +42,7 @@ def register_commands(bot) -> None:
         await respond(i, embed=branded(store.get(i.guild_id), title="sucrose • Panduan Bot", description=(
             "**Chat AI**\n`/chat pesan:...` atau mention bot untuk ngobrol.\n"
             "`/chat privat:true` — jawaban hanya terlihat oleh Anda.\n"
+            "Minta AI menjalankan command, misalnya: `ubah warna branding menjadi #00AA88`. Izin admin tetap berlaku.\n"
             "`/chat-reset` — hapus ingatan chat Anda di channel ini.\n"
             "`/ping` — cek koneksi.\n\n"
             "**Admin (Manage Server)**\n"
@@ -214,7 +216,7 @@ def register_commands(bot) -> None:
         config = store.get(i.guild_id)
         check_access(config, i.channel_id, getattr(i.channel, "parent_id", None))
         await i.response.defer(ephemeral=privat, thinking=True)
-        answer = await bot.chat.ask(chat_key(i.guild_id, i.channel_id, i.user.id, privat), pesan, config["ai"].get("system_prompt"))
+        answer = await bot.chat.ask(chat_key(i.guild_id, i.channel_id, i.user.id, privat), pesan, config["ai"].get("system_prompt"), action=CommandActions(bot, i))
         parts = chunks(answer)
         await i.edit_original_response(content=parts[0], allowed_mentions=discord.AllowedMentions.none())
         for part in parts[1:]:

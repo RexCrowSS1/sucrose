@@ -199,3 +199,22 @@ Setelah bot terhubung, lakukan uji server dengan akun anggota dan staf: kirim tr
 Jika AI gagal terhubung, jalankan `ollama serve`, `ollama list`, dan `python bot.py --check-ollama`. Jika model belum ada, unduh model yang sama dengan `OLLAMA_MODEL`. Jika timeout, gunakan model lebih ringan atau sesuaikan `OLLAMA_TIMEOUT`. Jika command tidak muncul, cek GUILD_ID/scopes dan jalankan `--sync`. Jika role/tiket gagal, periksa hierarki role serta izin channel/kategori. Jika privileged intent ditolak saat login, periksa halaman Bot di Developer Portal.
 
 Referensi resmi: [discord.py](https://discordpy.readthedocs.io/en/stable/), [Ollama Chat API](https://docs.ollama.com/api/chat), [Discord Gateway Intents](https://docs.discord.com/developers/events/gateway).
+
+### Menjalankan command lewat AI
+
+Gunakan `/chat pesan:buat autoresponder untuk halo dengan balasan Hai!`,
+mention bot (`@sucrose ubah warna branding menjadi #00AA88`), atau reply ke pesan bot.
+AI memilih satu command dari daftar command yang terdaftar, lalu bot memvalidasi
+argumen dan menjalankan fungsi slash command aslinya. Izin Manage Server tetap
+wajib untuk command admin; `/profile` juga tetap dibatasi oleh `OWNER_IDS`.
+Gunakan mention/ID atau nama channel/role yang persis dan tidak ambigu.
+
+Satu pesan menjalankan maksimal satu command. Parameter wajib yang belum lengkap
+akan diminta melalui pesan kesalahan; kirim ulang permintaan lengkapnya. Hasil command
+pada `/chat` dikirim privat, sedangkan hasil lewat mention/reply tampil di channel.
+Untuk `/profile` lewat mention/reply, lampirkan gambar dan sebutkan nama filenya.
+`/chat-reset` tetap dijalankan langsung sebagai slash command.
+Percakapan biasa tetap memakai ingatan chat; eksekusi command tidak disimpan sebagai
+konteks percakapan. Pemilihan command membutuhkan satu permintaan tambahan ke Ollama.
+Jika model menghasilkan rencana tidak valid, tidak ada command yang dijalankan;
+coba perjelas permintaan atau gunakan slash command langsung.
